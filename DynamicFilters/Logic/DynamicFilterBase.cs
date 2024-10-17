@@ -41,14 +41,24 @@ namespace DynamicFilters
             return ExpressionBuilder.Create();
         }
 
+        public Expression<Func<T, bool>> AsExpression()
+        {
+            return Build();
+        }
+
+        public Func<T, bool> AsDelegate()
+        {
+            return Build().Compile();
+        }
+
         public static implicit operator Expression<Func<T, bool>>(DynamicFilterBase<T> filter)
         {
-            return filter.Build();
+            return filter.AsExpression();
         }
 
         public static implicit operator Func<T, bool>(DynamicFilterBase<T> filter)
         {
-            return filter.Build().Compile();
+            return filter.AsDelegate();
         }
     }
 }
