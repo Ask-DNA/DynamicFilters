@@ -51,5 +51,14 @@ namespace DynamicFilters.Tests
 
             Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
         }
+
+        [Theory]
+        [ClassData(typeof(InvalidTypeConfigurationDataLoader))]
+        public void TypeValidationBehavior_ThrowsFilterConfigurationException<T>(DynamicFilterBase<T> filter)
+        {
+            Func<T, bool> tmp;
+
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
+        }
     }
 }
