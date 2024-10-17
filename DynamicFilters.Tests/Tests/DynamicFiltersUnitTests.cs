@@ -42,5 +42,14 @@ namespace DynamicFilters.Tests
 
             Assert.Equal(result1, result2);
         }
+
+        [Theory]
+        [ClassData(typeof(InvalidTargetMappingDataLoader))]
+        public void TargetMappingBehavior_ThrowsFilterConfigurationException<T>(DynamicFilterBase<T> filter)
+        {
+            Func<T, bool> tmp;
+
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
+        }
     }
 }
