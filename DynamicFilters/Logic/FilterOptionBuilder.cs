@@ -15,10 +15,12 @@ namespace DynamicFilters
             if (attr is null)
                 return false;
 
-            PropertyOrFieldInfo? targetMember = PropertyOrFieldInfo.GetOrDefault(typeof(T), attr.TargetName, true);
+            string targetName = GetTargetName(optionMember, attr);
+
+            PropertyOrFieldInfo? targetMember = PropertyOrFieldInfo.GetOrDefault(typeof(T), targetName, true);
             if (targetMember is null)
             {
-                exception = new PropertyOrFieldNotFoundException(typeof(T), attr.TargetName);
+                exception = new PropertyOrFieldNotFoundException(typeof(T), targetName);
                 return false;
             }
 
@@ -28,8 +30,15 @@ namespace DynamicFilters
                 return false;
             }
 
-            option = new(optionMember, attr.Option, attr.TargetName, _source);
+            option = new(optionMember, attr.Option, targetName, _source);
             return true;
+        }
+
+        private static string GetTargetName(PropertyOrFieldInfo optionMember, FilterOptionAttribute attr)
+        {
+            string? targetName = attr.TargetName;
+            targetName ??= optionMember.Wrappee.Name;
+            return targetName;
         }
     }
 }
