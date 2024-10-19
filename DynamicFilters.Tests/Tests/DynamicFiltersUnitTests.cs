@@ -95,5 +95,18 @@ namespace DynamicFilters.Tests
 
             Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
         }
+
+        [Theory]
+        [ClassData(typeof(IgnoreFlagsAutoMappingUsageDataLoader))]
+        public void FiltrationBehavior_IgnoreFlagsAutoMappingUsage_Success<T>(
+            List<T> subjectToFiltering,
+            DynamicFilterBase<T> filter,
+            Func<T, bool> analogousPredicate)
+        {
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
+
+            Assert.Equal(result1, result2);
+        }
     }
 }
