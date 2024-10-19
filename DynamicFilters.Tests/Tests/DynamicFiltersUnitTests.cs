@@ -73,5 +73,27 @@ namespace DynamicFilters.Tests
 
             Assert.Equal(result1, result2);
         }
+
+        [Theory]
+        [ClassData(typeof(IgnoreFlagsUsageDataLoader))]
+        public void FiltrationBehavior_IgnoreFlagsUsage_Success<T>(
+            List<T> subjectToFiltering,
+            DynamicFilterBase<T> filter,
+            Func<T, bool> analogousPredicate)
+        {
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
+
+            Assert.Equal(result1, result2);
+        }
+
+        [Theory]
+        [ClassData(typeof(InvalidIgnoreFlagsMappingDataLoader))]
+        public void IgnoreFlagMappingBehavior_ThrowsFilterConfigurationException<T>(DynamicFilterBase<T> filter)
+        {
+            Func<T, bool> tmp;
+
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
+        }
     }
 }
