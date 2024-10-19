@@ -30,15 +30,10 @@ namespace DynamicFilters
                 return false;
             }
 
-            PropertyOrFieldInfo? ignoreFlagMember = null;
-            if (attr.IgnoreFlagName is not null)
+            if (!ProcessIgnoreFlag(attr.IgnoreFlagName, optionMember, out PropertyOrFieldInfo? ignoreFlagMember, out IgnoreFlagNotFoundException? ex))
             {
-                ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), attr.IgnoreFlagName);
-                if (ignoreFlagMember is null || ignoreFlagMember.PropertyOrFieldType != typeof(bool))
-                {
-                    exception = new IgnoreFlagNotFoundException(_source.GetType(), attr.IgnoreFlagName, optionMember);
-                    return false;
-                }
+                exception = ex;
+                return false;
             }
 
             option = new(optionMember, ignoreFlagMember, attr.Option, targetName, _source);
@@ -50,6 +45,27 @@ namespace DynamicFilters
             string? targetName = attr.TargetName;
             targetName ??= optionMember.Wrappee.Name;
             return targetName;
+        }
+
+        private bool ProcessIgnoreFlag(
+            string? name,
+            PropertyOrFieldInfo optionMember,
+            out PropertyOrFieldInfo? ignoreFlagMember,
+            out IgnoreFlagNotFoundException? exception)
+        {
+            exception = null;
+
+            if (name is not null)
+            {
+                ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), name);
+                if (ignoreFlagMember is null || ignoreFlagMember.PropertyOrFieldType != typeof(bool))
+                    exception = new IgnoreFlagNotFoundException(_source.GetType(), name, optionMember);
+                return exception is null;
+            }
+
+            ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), "Ignore" + optionMember.Wrappee.Name);
+
+            return true;
         }
     }
 }
