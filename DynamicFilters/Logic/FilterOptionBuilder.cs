@@ -6,7 +6,7 @@ namespace DynamicFilters
     {
         private readonly DynamicFilterBase<T> _source = source;
 
-        public bool TryCreate(PropertyOrFieldInfo optionMember, out FilterOption? option, out InvalidOperationException? exception)
+        public bool TryCreate(PropertyOrFieldInfo optionMember, out FilterOption? option, out InvalidFilterOptionConfigurationException? exception)
         {
             option = null;
             exception = null;
@@ -20,13 +20,13 @@ namespace DynamicFilters
             PropertyOrFieldInfo? targetMember = PropertyOrFieldInfo.GetOrDefault(typeof(T), targetName, true);
             if (targetMember is null)
             {
-                exception = new PropertyOrFieldNotFoundException(typeof(T), targetName);
+                exception = new TargetNotFoundException(typeof(T), targetName, optionMember);
                 return false;
             }
 
             if (targetMember.PropertyOrFieldType != optionMember.PropertyOrFieldType)
             {
-                exception = new FilterOptionTypeMismatchException(targetMember, optionMember);
+                exception = new TypeMismatchException(targetMember, optionMember);
                 return false;
             }
 

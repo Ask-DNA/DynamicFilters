@@ -1,6 +1,6 @@
 ﻿namespace DynamicFilters
 {
-    public class InvalidFilterConfigurationException(IEnumerable<InvalidOperationException> innerExceptions)
+    public class InvalidFilterConfigurationException(IEnumerable<InvalidFilterOptionConfigurationException> innerExceptions)
         : AggregateException("Invalid filter configuration", innerExceptions)
     { }
 }

@@ -6,11 +6,11 @@ namespace DynamicFilters
     {
         private readonly List<FilterOption> _filterOptions = [];
 
-        private readonly List<InvalidOperationException> _errors = [];
+        private readonly List<InvalidFilterOptionConfigurationException> _errors = [];
 
         public IReadOnlyList<FilterOption> FilterOptions { get => _filterOptions; }
 
-        public IReadOnlyList<InvalidOperationException> Errors { get => _errors; }
+        public IReadOnlyList<InvalidFilterOptionConfigurationException> Errors { get => _errors; }
 
         public bool Valid { get => _errors.Count == 0; }
 
@@ -20,7 +20,7 @@ namespace DynamicFilters
 
             foreach (PropertyInfo property in filter.GetType().GetProperties())
             {
-                if (builder.TryCreate(property, out FilterOption? option, out InvalidOperationException? exception))
+                if (builder.TryCreate(property, out FilterOption? option, out InvalidFilterOptionConfigurationException? exception))
                     _filterOptions.Add(option!);
                 else if (exception is not null)
                     _errors.Add(exception);
@@ -28,7 +28,7 @@ namespace DynamicFilters
 
             foreach (FieldInfo field in filter.GetType().GetFields())
             {
-                if (builder.TryCreate(field, out FilterOption? option, out InvalidOperationException? exception))
+                if (builder.TryCreate(field, out FilterOption? option, out InvalidFilterOptionConfigurationException? exception))
                     _filterOptions.Add(option!);
                 else if (exception is not null)
                     _errors.Add(exception);
