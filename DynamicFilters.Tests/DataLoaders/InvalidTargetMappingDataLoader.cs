@@ -17,19 +17,19 @@
 
         private class Filter1 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, "_privateIntegerField")]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = "_privateIntegerField")]
             public int Integer = 0;
         }
 
         private class Filter2 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.NonReadableIntegerProperty))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.NonReadableIntegerProperty))]
             public int Integer = 0;
         }
 
         private class Filter3 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, "InvalidName")]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = "InvalidName")]
             public int Integer = 0;
         }
     }

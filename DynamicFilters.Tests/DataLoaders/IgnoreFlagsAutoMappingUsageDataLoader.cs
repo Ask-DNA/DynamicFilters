@@ -45,12 +45,12 @@
 
         public class Filter : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.IntegerField))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.IntegerField))]
             public int IntegerField = 0;
 
             public bool IgnoreIntegerField = false;
 
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.StringField))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.StringField))]
             public string StringField = "";
 
             public bool IgnoreStringField = false;

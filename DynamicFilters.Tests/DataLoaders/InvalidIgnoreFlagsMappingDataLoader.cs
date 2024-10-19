@@ -15,13 +15,13 @@
 
         private class Filter1 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.Integer), "IgnoreInteger")]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.Integer), IgnoreFlagName = "IgnoreInteger")]
             public int Integer = 0;
         }
 
         private class Filter2 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.Integer), "IgnoreInteger")]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.Integer), IgnoreFlagName = "IgnoreInteger")]
             public int Integer = 0;
 
             public int IgnoreInteger = 0;

@@ -18,19 +18,19 @@
 
         private class Filter1 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.IntegerField))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.IntegerField))]
             public int? Integer = 0;
         }
 
         private class Filter2 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.NullableIntegerField))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.NullableIntegerField))]
             public int Integer = 0;
         }
 
         private class Filter3 : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.StringField))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.StringField))]
             public int Integer = 0;
         }
     }

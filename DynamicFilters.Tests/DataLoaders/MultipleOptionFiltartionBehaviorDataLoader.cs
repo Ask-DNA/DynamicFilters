@@ -41,10 +41,10 @@
 
         public class Filter : DynamicFilterBase<Entity>
         {
-            [FilterOption(FilterOptionType.Equality, nameof(Entity.IntegerField))]
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.IntegerField))]
             public int SomeInteger = 0;
 
-            [FilterOption(FilterOptionType.Inequality, nameof(Entity.StringField))]
+            [FilterOption(Option = FilterOptionType.Inequality, TargetName = nameof(Entity.StringField))]
             public string SomeString = "";
         }
     }
