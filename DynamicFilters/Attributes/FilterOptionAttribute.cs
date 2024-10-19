@@ -7,6 +7,15 @@
 
         internal string? TargetName { get; init; } = null;
 
+        internal string? IgnoreFlagName { get; init; } = null;
+
+        public FilterOptionAttribute(FilterOptionType option, string targetName, string ignoreFlagName)
+        {
+            Option = option;
+            TargetName = targetName;
+            IgnoreFlagName = ignoreFlagName;
+        }
+
         public FilterOptionAttribute(FilterOptionType option, string targetName)
         {
             Option = option;

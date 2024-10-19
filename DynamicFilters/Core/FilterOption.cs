@@ -6,6 +6,8 @@
 
         private readonly PropertyOrFieldInfo _optionMember;
 
+        private readonly PropertyOrFieldInfo? _ignoreFlagMember = null;
+
         public object? Value
         {
             get => _optionMember.GetValue(_source);
@@ -17,9 +19,15 @@
 
         public Type ValueType { get; init; }
 
-        public FilterOption(PropertyOrFieldInfo optionMember, FilterOptionType optionType, string targetName, object source)
+        public bool Ignore
+        {
+            get => _ignoreFlagMember is not null && (bool)_ignoreFlagMember.GetValue(_source)!;
+        }
+
+        public FilterOption(PropertyOrFieldInfo optionMember, PropertyOrFieldInfo? ignoreFlagMember, FilterOptionType optionType, string targetName, object source)
         {
             _optionMember = optionMember;
+            _ignoreFlagMember = ignoreFlagMember;
             OptionType = optionType;
             TargetName = targetName;
             ValueType = optionMember.PropertyOrFieldType;

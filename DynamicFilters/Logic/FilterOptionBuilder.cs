@@ -30,7 +30,18 @@ namespace DynamicFilters
                 return false;
             }
 
-            option = new(optionMember, attr.Option, targetName, _source);
+            PropertyOrFieldInfo? ignoreFlagMember = null;
+            if (attr.IgnoreFlagName is not null)
+            {
+                ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), attr.IgnoreFlagName);
+                if (ignoreFlagMember is null || ignoreFlagMember.PropertyOrFieldType != typeof(bool))
+                {
+                    exception = new IgnoreFlagNotFoundException(_source.GetType(), attr.IgnoreFlagName, optionMember);
+                    return false;
+                }
+            }
+
+            option = new(optionMember, ignoreFlagMember, attr.Option, targetName, _source);
             return true;
         }
 

@@ -10,6 +10,9 @@ namespace DynamicFilters
 
         public void AddFilterOption(FilterOption option)
         {
+            if (option.Ignore)
+                return;
+
             MemberExpression left = Expression.PropertyOrField(_parameter, option.TargetName);
             ConstantExpression right = Expression.Constant(option.Value, option.ValueType);
 
