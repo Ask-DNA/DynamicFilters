@@ -3,6 +3,10 @@
     public enum FilterOptionType
     {
         Equality,
-        Inequality
+        Inequality,
+        LessThan,
+        LessThanOrEqual,
+        GreaterThan,
+        GreaterThanOrEqual
     }
 }

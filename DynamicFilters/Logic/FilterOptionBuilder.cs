@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using DynamicFilters.Core;
+using DynamicFilters.Exceptions;
+using System.Reflection;
 
 namespace DynamicFilters
 {
@@ -30,6 +32,12 @@ namespace DynamicFilters
                 return false;
             }
 
+            if (!ValidateOptionType(attr.Option, targetMember.PropertyOrFieldType))
+            {
+                exception = new OperatorIsRequiredException(optionMember, attr.Option);
+                return false;
+            }
+
             if (!ProcessIgnoreFlag(attr.IgnoreFlagName, optionMember, out PropertyOrFieldInfo? ignoreFlagMember, out IgnoreFlagNotFoundException? ex))
             {
                 exception = ex;
@@ -45,6 +53,23 @@ namespace DynamicFilters
             string? targetName = attr.TargetName;
             targetName ??= optionMember.Wrappee.Name;
             return targetName;
+        }
+
+        private static bool ValidateOptionType(FilterOptionType optionType, Type type)
+        {
+            return optionType switch
+            {
+                FilterOptionType.Equality | FilterOptionType.Inequality => true,
+                FilterOptionType.LessThan =>
+                    type.IsNumeric() || type.GetMethod("op_LessThan", BindingFlags.Static | BindingFlags.Public) is not null,
+                FilterOptionType.LessThanOrEqual =>
+                    type.IsNumeric() || type.GetMethod("op_LessThanOrEqual", BindingFlags.Static | BindingFlags.Public) is not null,
+                FilterOptionType.GreaterThan =>
+                    type.IsNumeric() || type.GetMethod("op_GreaterThan", BindingFlags.Static | BindingFlags.Public) is not null,
+                FilterOptionType.GreaterThanOrEqual =>
+                    type.IsNumeric() || type.GetMethod("op_GreaterThanOrEqual", BindingFlags.Static | BindingFlags.Public) is not null,
+                _ => true
+            };
         }
 
         private bool ProcessIgnoreFlag(
