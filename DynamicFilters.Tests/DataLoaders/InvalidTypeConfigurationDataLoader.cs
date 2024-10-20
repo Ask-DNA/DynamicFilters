@@ -7,6 +7,8 @@
             Add(new Filter1());
             Add(new Filter2());
             Add(new Filter3());
+            Add(new Filter4());
+            Add(new Filter5());
         }
 
         public class Entity
@@ -32,6 +34,18 @@
         {
             [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.StringField))]
             public int Integer = 0;
+        }
+
+        private class Filter4 : DynamicFilterBase<Entity>
+        {
+            [FilterOption(Option = FilterOptionType.LessThan, TargetName = nameof(Entity.IntegerField))]
+            public int? Integer = 0;
+        }
+
+        private class Filter5 : DynamicFilterBase<Entity>
+        {
+            [FilterOption(Option = FilterOptionType.LessThan, TargetName = nameof(Entity.StringField))]
+            public string String = "";
         }
     }
 }
