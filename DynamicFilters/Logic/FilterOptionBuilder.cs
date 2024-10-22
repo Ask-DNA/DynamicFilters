@@ -1,6 +1,4 @@
-﻿using DynamicFilters.Core;
-using DynamicFilters.Exceptions;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace DynamicFilters
 {

@@ -1,4 +1,4 @@
-﻿namespace DynamicFilters.Core
+﻿namespace DynamicFilters
 {
     internal static class TypeExtensions
     {
