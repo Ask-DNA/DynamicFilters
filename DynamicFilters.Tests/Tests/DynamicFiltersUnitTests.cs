@@ -11,7 +11,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
@@ -24,7 +24,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
@@ -37,7 +37,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
@@ -49,7 +49,7 @@ namespace DynamicFilters.Tests
         {
             Func<T, bool> tmp;
 
-            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter.AsDelegate());
         }
 
         [Theory]
@@ -58,7 +58,7 @@ namespace DynamicFilters.Tests
         {
             Func<T, bool> tmp;
 
-            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter.AsDelegate());
         }
 
         [Theory]
@@ -68,7 +68,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
@@ -81,7 +81,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
@@ -93,7 +93,7 @@ namespace DynamicFilters.Tests
         {
             Func<T, bool> tmp;
 
-            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter);
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter.AsDelegate());
         }
 
         [Theory]
@@ -103,7 +103,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
@@ -116,7 +116,7 @@ namespace DynamicFilters.Tests
             DynamicFilterBase<T> filter,
             Func<T, bool> analogousPredicate)
         {
-            IEnumerable<T> result1 = subjectToFiltering.Where(filter);
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
             IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
 
             Assert.Equal(result1, result2);
