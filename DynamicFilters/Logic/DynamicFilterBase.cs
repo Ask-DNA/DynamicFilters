@@ -50,5 +50,20 @@ namespace DynamicFilters
         {
             return Build().Compile();
         }
+
+        public static IDynamicFilter<T> operator !(DynamicFilterBase<T> filter)
+        {
+            return new NotFilterSpec<T>(filter);
+        }
+
+        public static IDynamicFilter<T> operator &(DynamicFilterBase<T> one, DynamicFilterBase<T> other)
+        {
+            return new AndFilterSpec<T>(one, other);
+        }
+
+        public static IDynamicFilter<T> operator |(DynamicFilterBase<T> one, DynamicFilterBase<T> other)
+        {
+            return new OrFilterSpec<T>(one, other);
+        }
     }
 }
