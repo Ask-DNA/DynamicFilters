@@ -1,5 +1,12 @@
 ## Tutorial
 
++ [Creation](#creation)
++ [Filter options declaration](#filter-options-declaration)
++ [Ignoring options](#ignoring-options)
++ [Usage](#usage)
++ [Composite filters](#composite-filters)
++ [Exceptions](#exceptions)
+
 ### Creation
 To create a filter, you need to create a class that inherits from DynamicFilterBase<T>, where T is the type of entity to be filtered:
 ```csharp
@@ -82,11 +89,6 @@ UserFilter userFilter = new() { MinAge = 18 };
 Func<User, bool> predicate = userFilter.AsDelegate();
 Expression<Func<User, bool>> expression = userFilter.AsExpression();
 ```
-Also filter can be implicitly cast to ```Func<T, bool>``` or ```Expression<Func<T, bool>>```:
-```csharp
-Func<User, bool> predicate = userFilter;
-Expression<Func<User, bool>> expression = userFilter;
-```
 The code below demonstrates filter usage example:
 ```csharp
 internal class Program
@@ -116,15 +118,15 @@ internal class Program
             ];
 
         UserFilter userFilter = new() { MinAge = 18, IgnoreMinAge = false };
-        PrintUserNames(users.Where(userFilter));
+        PrintUserNames(users.Where(userFilter.AsDelegate()));
         // John Ann Robert
 
         userFilter.MinAge = 20;
-        PrintUserNames(users.Where(userFilter));
+        PrintUserNames(users.Where(userFilter.AsDelegate()));
         // John Robert
 
         userFilter.IgnoreMinAge = true;
-        PrintUserNames(users.Where(userFilter));
+        PrintUserNames(users.Where(userFilter.AsDelegate()));
         // John Ann Robert Leonard Jane
     }
 
@@ -137,8 +139,73 @@ internal class Program
 }
 ```
 
+### Composite filters
+
+Logic operations are defined for ```DynamicFilterBase``` class and ```IDynamicFilter``` interface, which result is a composite filter that implements the same interface.
+
+> [!IMPORTANT]
+> When using composite filters, keep in mind that they refer to the options of the original filters. Changing the values ​​of these options affects the behavior of the composite filter.
+
+The following example demonstrates the process of creating and using a composite filter:
+```csharp
+internal class Program
+{
+    class User
+    {
+        public string Name { get; set; } = "";
+
+        public int Age { get; set; }
+    }
+
+    class MinAgeFilter : DynamicFilterBase<User>
+    {
+        [FilterOption(Option = FilterOptionType.GreaterThanOrEqual, TargetName = nameof(User.Age))]
+        public int MinAge { get; set; }
+    }
+
+    class NameFilter : DynamicFilterBase<User>
+    {
+        [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(User.Name))]
+        public string Name { get; set; } = "";
+    }
+
+    static void Main(string[] args)
+    {
+        User[] users = [
+            new User() { Name = "John", Age = 20 },
+            new User() { Name = "Ann", Age = 18 },
+            new User() { Name = "Robert", Age = 25 },
+            new User() { Name = "Leonard", Age = 15 },
+            new User() { Name = "Jane", Age = 14 },
+            ];
+
+        IDynamicFilter<User> minAgeFilter = new MinAgeFilter() { MinAge = 18 };
+        IDynamicFilter<User> nameFilter = new NameFilter() { Name = "John" };
+
+        IDynamicFilter<User> compositeFilter = minAgeFilter & nameFilter;
+        PrintUserNames(users.Where(compositeFilter.AsDelegate()));
+        // John
+
+        compositeFilter = minAgeFilter & !nameFilter;
+        PrintUserNames(users.Where(compositeFilter.AsDelegate()));
+        // Ann Robert
+
+        compositeFilter = !minAgeFilter | nameFilter;
+        PrintUserNames(users.Where(compositeFilter.AsDelegate()));
+        // John Leonard Jane
+    }
+
+    static void PrintUserNames(IEnumerable<User> users)
+    {
+        foreach (var user in users)
+            Console.Write(user.Name + ' ');
+        Console.WriteLine();
+    }
+}
+```
+
 ### Exceptions
-Predicate generation (explicit and implicit) can throw ```InvalidFilterConfigurationException``` in case of invalid filter configuration.
+Predicate generation with ```AsDelegate()``` and ```AsExpression()``` methods can throw ```InvalidFilterConfigurationException``` or ```InvalidInnerFilterConfigurationException``` in case of invalid filter configuration.
 
 > [!TIP]
 > To prevent throwing, check the ```Valid``` property.
@@ -171,3 +238,7 @@ Predicate generation (explicit and implicit) can throw ```InvalidFilterConfigura
 
   Occurs when using types that do not support the operators required by the selected filter option type.
   For example, for ```FilterOptionType.GreaterThanOrEqual```, the exception will be thrown when using a type that does not support the ```>=``` operator.
+
++ ```InvalidInnerFilterConfigurationException : InvalidOperationException```
+
+  Occurs when using composite filters, which inner filters are invalid.
