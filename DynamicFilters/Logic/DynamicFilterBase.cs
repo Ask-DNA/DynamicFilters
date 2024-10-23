@@ -2,7 +2,7 @@
 
 namespace DynamicFilters
 {
-    public abstract class DynamicFilterBase<T>
+    public abstract class DynamicFilterBase<T> : IDynamicFilter<T>
     {
         private FilterOptionsManager<T>? _optionsManager;
 
