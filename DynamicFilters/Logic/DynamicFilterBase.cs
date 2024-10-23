@@ -50,15 +50,5 @@ namespace DynamicFilters
         {
             return Build().Compile();
         }
-
-        public static implicit operator Expression<Func<T, bool>>(DynamicFilterBase<T> filter)
-        {
-            return filter.AsExpression();
-        }
-
-        public static implicit operator Func<T, bool>(DynamicFilterBase<T> filter)
-        {
-            return filter.AsDelegate();
-        }
     }
 }
