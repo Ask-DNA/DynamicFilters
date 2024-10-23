@@ -121,5 +121,27 @@ namespace DynamicFilters.Tests
 
             Assert.Equal(result1, result2);
         }
+
+        [Theory]
+        [ClassData(typeof(CompositeFiltrationBehaviorDataLoader))]
+        public void FiltrationBehavior_Composite_Success<T>(
+            List<T> subjectToFiltering,
+            IDynamicFilter<T> filter,
+            Func<T, bool> analogousPredicate)
+        {
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
+            IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
+
+            Assert.Equal(result1, result2);
+        }
+
+        [Theory]
+        [ClassData(typeof(InvalidInnerFilterConfigurationDataLoader))]
+        public void IgnoreFlagMappingBehavior_ThrowsInvalidInnerFilterConfigurationException<T>(IDynamicFilter<T> filter)
+        {
+            Func<T, bool> tmp;
+
+            Assert.Throws<InvalidInnerFilterConfigurationException>(() => tmp = filter.AsDelegate());
+        }
     }
 }
