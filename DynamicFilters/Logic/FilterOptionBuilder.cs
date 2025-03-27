@@ -87,6 +87,8 @@ namespace DynamicFilters
             }
 
             ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), "Ignore" + optionMember.Wrappee.Name);
+            if (ignoreFlagMember is not null)
+                ignoreFlagMember = ignoreFlagMember.PropertyOrFieldType == typeof(bool) ? ignoreFlagMember : null;
 
             return true;
         }
