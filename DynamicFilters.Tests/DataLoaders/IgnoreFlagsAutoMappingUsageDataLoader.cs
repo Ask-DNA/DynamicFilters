@@ -21,20 +21,28 @@
         {
             Add(
                 _entities,
-                new Filter() { IntegerField = 1, IgnoreIntegerField = false, StringField = "5", IgnoreStringField = false },
+                new Filter1() { IntegerField = 1, IgnoreIntegerField = false, StringField = "5", IgnoreStringField = false },
                 o => o.IntegerField == 1 && o.StringField == "5");
             Add(
                 _entities,
-                new Filter() { IntegerField = 3, IgnoreIntegerField = false, StringField = "5", IgnoreStringField = true },
+                new Filter1() { IntegerField = 3, IgnoreIntegerField = false, StringField = "5", IgnoreStringField = true },
                 o => o.IntegerField == 3);
             Add(
                 _entities,
-                new Filter() { IntegerField = 3, IgnoreIntegerField = true, StringField = "4", IgnoreStringField = false },
+                new Filter1() { IntegerField = 3, IgnoreIntegerField = true, StringField = "4", IgnoreStringField = false },
                 o => o.StringField == "4");
             Add(
                 _entities,
-                new Filter() { IntegerField = 3, IgnoreIntegerField = true, StringField = "4", IgnoreStringField = true },
+                new Filter1() { IntegerField = 3, IgnoreIntegerField = true, StringField = "4", IgnoreStringField = true },
                 o => true);
+            Add(
+                _entities,
+                new Filter2() { IntegerField = 3, IgnoreIntegerField = 0 },
+                o => o.IntegerField == 3);
+            Add(
+                _entities,
+                new Filter2() { IntegerField = 3, IgnoreIntegerField = 1 },
+                o => o.IntegerField == 3);
         }
 
         public class Entity
@@ -43,7 +51,7 @@
             public string StringField = "";
         }
 
-        public class Filter : DynamicFilterBase<Entity>
+        public class Filter1 : DynamicFilterBase<Entity>
         {
             [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.IntegerField))]
             public int IntegerField = 0;
@@ -54,6 +62,14 @@
             public string StringField = "";
 
             public bool IgnoreStringField = false;
+        }
+
+        public class Filter2 : DynamicFilterBase<Entity>
+        {
+            [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(Entity.IntegerField))]
+            public int IntegerField = 0;
+
+            public int IgnoreIntegerField = 0;
         }
     }
 }
