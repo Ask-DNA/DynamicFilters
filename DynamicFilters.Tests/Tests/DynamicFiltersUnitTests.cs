@@ -110,6 +110,19 @@ namespace DynamicFilters.Tests
         }
 
         [Theory]
+        [ClassData(typeof(DisabledIgnoreFlagAutoMappingDataLoader))]
+        public void FiltrationBehavior_DisabledIgnoreFlagsAutoMappingUsage_Success<T>(
+            List<T> subjectToFiltering,
+            DynamicFilterBase<T> filter,
+            Func<T, bool> analogousPredicate)
+        {
+            IEnumerable<T> result1 = subjectToFiltering.Where(filter.AsDelegate());
+            IEnumerable<T> result2 = subjectToFiltering.Where(analogousPredicate);
+
+            Assert.Equal(result1, result2);
+        }
+
+        [Theory]
         [ClassData(typeof(NumericComparsionFiltrationBehaviorDataLoader))]
         public void FiltrationBehavior_NumericComparsion_Success<T>(
             List<T> subjectToFiltering,
@@ -142,6 +155,15 @@ namespace DynamicFilters.Tests
             Func<T, bool> tmp;
 
             Assert.Throws<InvalidInnerFilterConfigurationException>(() => tmp = filter.AsDelegate());
+        }
+
+        [Theory]
+        [ClassData(typeof(DisabledTargetAutoMappingDataLoader))]
+        public void DisabledTargetMappingBehavior_ThrowsInvalidFilterConfigurationException<T>(IDynamicFilter<T> filter)
+        {
+            Func<T, bool> tmp;
+
+            Assert.Throws<InvalidFilterConfigurationException>(() => tmp = filter.AsDelegate());
         }
     }
 }
