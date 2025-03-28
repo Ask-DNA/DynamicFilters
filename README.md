@@ -57,6 +57,34 @@ is similar to the following:
 public int Age { get; set; } = 18;
 ```
 
+You can disable target automapping by using ```AllowTargetAutoMappingAttribute```:
+```csharp
+// Default settings, AllowTargetAutoMappingAttribute can be ommited
+[AllowTargetAutoMapping(Allow = true)]
+class UserFilter1 : DynamicFilterBase<User>
+{
+    // Valid, because automapping is enabled
+    [FilterOption(Option = FilterOptionType.Equality)]
+    public int Name { get; set; } = 18;
+    
+    // Valid, because target is specified
+    [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(User.Age))]
+    public int Age { get; set; } = 18;
+}
+
+[AllowTargetAutoMapping(Allow = false)]
+class UserFilter2 : DynamicFilterBase<User>
+{
+    // Invalid, because automapping is disabled
+    [FilterOption(Option = FilterOptionType.Equality)]
+    public int Name { get; set; } = 18;
+    
+    // Valid, because target is specified
+    [FilterOption(Option = FilterOptionType.Equality, TargetName = nameof(User.Age))]
+    public int Age { get; set; } = 18;
+}
+```
+
 ### Ignoring options
 An option can refer to an ignore flag - a public property or field of boolean type:
 ```csharp
@@ -81,6 +109,40 @@ class UserFilter : DynamicFilterBase<User>
 When IgnoreAge is false, the above class will generate the following expression: ```(User u) => u.Age == 18```
 
 When IgnoreAge is true: ```(User u) => true```
+
+It is also possible to disable ignore flag automapping using ```AllowIgnoreFlagAutoMappingAttribute```:
+```csharp
+// Default settings, AllowIgnoreFlagAutoMappingAttribute can be ommited
+[AllowIgnoreFlagAutoMapping(Allow = true)]
+class UserFilter1 : DynamicFilterBase<User>
+{
+    public bool IgnoreName { get; set; } = false;
+    public bool IgnoreAge { get; set; } = false;
+    
+    // Ignore flag is specified
+    [FilterOption(Option = FilterOptionType.Equality, IgnoreFlagName = nameof(IgnoreName))]
+    public int Name { get; set; } = 18;
+    
+    // Ignore flag is also specified because of automapping possibilities
+    [FilterOption(Option = FilterOptionType.Equality)]
+    public int Age { get; set; } = 18;
+}
+
+[AllowIgnoreFlagAutoMapping(Allow = false)]
+class UserFilter2 : DynamicFilterBase<User>
+{
+    public bool IgnoreName { get; set; } = false;
+    public bool IgnoreAge { get; set; } = false;
+    
+    // Ignore flag is specified
+    [FilterOption(Option = FilterOptionType.Equality, IgnoreFlagName = nameof(IgnoreName))]
+    public int Name { get; set; } = 18;
+    
+    // Ignore flag is not specified because automapping is disabled
+    [FilterOption(Option = FilterOptionType.Equality)]
+    public int Age { get; set; } = 18;
+}
+```
 
 ### Usage
 To generate a predicate, create an object and call the ```AsDelegate()``` or ```AsExpression()``` method:
@@ -225,6 +287,10 @@ Predicate generation with ```AsDelegate()``` and ```AsExpression()``` methods ca
 + ```TargetNotFoundException : InvalidFilterOptionConfigurationException```
 
   Occurs when the specified target property or field is not found among public class members.
+
++ ```TargetNotSpecifiedException : InvalidFilterOptionConfigurationException```
+
+  Occurs when target automapping is disabled with ```AllowTargetAutoMappingAttribute``` and filter option configuration does not contain explicitly specified target.
 
 + ```TypeMismatchException : InvalidFilterOptionConfigurationException```
 
