@@ -2,9 +2,27 @@
 
 namespace DynamicFilters
 {
-    internal class FilterOptionBuilder<T>(DynamicFilterBase<T> source)
+    internal class FilterOptionBuilder<T>
     {
-        private readonly DynamicFilterBase<T> _source = source;
+        private readonly DynamicFilterBase<T> _source;
+
+        private readonly bool _allowTargetAutoMapping;
+
+        private readonly bool _allowIgnoreFlagAutoMapping;
+
+        public FilterOptionBuilder(DynamicFilterBase<T> source)
+        {
+            _source = source;
+            
+            AllowTargetAutoMappingAttribute? allowTargetAutoMappingAttribute
+                = source.GetType().GetCustomAttribute<AllowTargetAutoMappingAttribute>();
+            _allowTargetAutoMapping = allowTargetAutoMappingAttribute is null || allowTargetAutoMappingAttribute.Allow;
+            
+            AllowIgnoreFlagAutoMappingAttribute? allowIgnoreFlagAutoMappingAttribute
+                = source.GetType().GetCustomAttribute<AllowIgnoreFlagAutoMappingAttribute>();
+            _allowIgnoreFlagAutoMapping = allowIgnoreFlagAutoMappingAttribute is null || allowIgnoreFlagAutoMappingAttribute.Allow;
+        }
+
 
         public bool TryCreate(PropertyOrFieldInfo optionMember, out FilterOption? option, out InvalidFilterOptionConfigurationException? exception)
         {
@@ -15,7 +33,12 @@ namespace DynamicFilters
             if (attr is null)
                 return false;
 
-            string targetName = GetTargetName(optionMember, attr);
+            string? targetName = GetTargetName(optionMember, attr);
+            if (targetName is null)
+            {
+                exception = new TargetNotSpecifiedException(optionMember);
+                return false;
+            }
 
             PropertyOrFieldInfo? targetMember = PropertyOrFieldInfo.GetOrDefault(typeof(T), targetName, true);
             if (targetMember is null)
@@ -46,10 +69,11 @@ namespace DynamicFilters
             return true;
         }
 
-        private static string GetTargetName(PropertyOrFieldInfo optionMember, FilterOptionAttribute attr)
+        private string? GetTargetName(PropertyOrFieldInfo optionMember, FilterOptionAttribute attr)
         {
             string? targetName = attr.TargetName;
-            targetName ??= optionMember.Wrappee.Name;
+            if (_allowTargetAutoMapping)
+                targetName ??= optionMember.Wrappee.Name;
             return targetName;
         }
 
@@ -86,10 +110,15 @@ namespace DynamicFilters
                 return exception is null;
             }
 
-            ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), "Ignore" + optionMember.Wrappee.Name);
-            if (ignoreFlagMember is not null)
-                ignoreFlagMember = ignoreFlagMember.PropertyOrFieldType == typeof(bool) ? ignoreFlagMember : null;
+            if (_allowIgnoreFlagAutoMapping)
+            {
+                ignoreFlagMember = PropertyOrFieldInfo.GetOrDefault(_source.GetType(), "Ignore" + optionMember.Wrappee.Name);
+                if (ignoreFlagMember is not null)
+                    ignoreFlagMember = ignoreFlagMember.PropertyOrFieldType == typeof(bool) ? ignoreFlagMember : null;
+                return true;
+            }
 
+            ignoreFlagMember = null;
             return true;
         }
     }
