@@ -8,7 +8,7 @@
 + [Exceptions](#exceptions)
 
 ### Creation
-To create a filter, you need to create a class that inherits from DynamicFilterBase<T>, where T is the type of entity to be filtered:
+To create a filter, you need to create a class that inherits from ```DynamicFilterBase<T>```, where ```T``` is the type of entity to be filtered:
 ```csharp
 class User
 {
@@ -23,7 +23,7 @@ class UserFilter : DynamicFilterBase<User>
 ```
 
 ### Filter options declaration
-A filter consists of options represented by its public fields and properties. To set an option, apply the FilterOptionAttribute to a class member:
+A filter consists of options represented by its public fields and properties. To set an option, apply the ```FilterOptionAttribute``` to a class member:
 ```csharp
 class UserFilter : DynamicFilterBase<User>
 {
@@ -86,7 +86,7 @@ class UserFilter2 : DynamicFilterBase<User>
 ```
 
 ### Ignoring options
-An option can refer to an ignore flag - a public property or field of boolean type:
+An option can refer to an ignore flag – a public property or field of boolean type:
 ```csharp
 class UserFilter : DynamicFilterBase<User>
 {
@@ -96,7 +96,7 @@ class UserFilter : DynamicFilterBase<User>
     public int Age { get; set; } = 18;
 }
 ```
-Ignore flag reference can be ommited if the flag name is "Ignore" + the option name:
+Ignore flag reference can be ommited if the flag name is ```"Ignore"``` + the option name:
 ```csharp
 class UserFilter : DynamicFilterBase<User>
 {
@@ -106,9 +106,9 @@ class UserFilter : DynamicFilterBase<User>
     public int Age { get; set; } = 18;
 }
 ```
-When IgnoreAge is false, the above class will generate the following expression: ```(User u) => u.Age == 18```
+When ```IgnoreAge == false```, the above class will generate the following expression: ```(User u) => u.Age == 18```
 
-When IgnoreAge is true: ```(User u) => true```
+When ```IgnoreAge == true```: ```(User u) => true```
 
 It is also possible to disable ignore flag automapping using ```AllowIgnoreFlagAutoMappingAttribute```:
 ```csharp
